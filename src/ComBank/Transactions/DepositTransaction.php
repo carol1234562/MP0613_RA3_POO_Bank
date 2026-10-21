@@ -10,9 +10,20 @@
 use ComBank\Bank\Contracts\BankAccountInterface;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
 
-class DepositTransaction 
+class DepositTransaction implements BankTransactionInterface
 {
+    protected float $amount;
 
+    public function __construct(float $amount)
+    {
+        $this->amount = $amount;
+    }
+    
 
-   
+    public function applyTransaction(BankAccountInterface $account): float
+    {
+        // Sumamos el monto del depósito al balance actual de la cuenta
+        $newBalance = $account->getBalance() + $this->amount;
+        return $newBalance;
+    }
 }
