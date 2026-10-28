@@ -31,8 +31,8 @@ class WithdrawTransaction implements BankTransactionInterface
         $newBalance = $currentBalance - $this->amount;
 
         if (!$account->getOverdraft()->isGrantOverdraftFunds($newBalance)) {
-            throw new InvalidOverdraftFundsException("Insufficient balance to complete the withdrawal.");
-        }
+        throw new FailedTransactionException("Insufficient balance to complete the withdrawal.");
+          }   
 
         return $newBalance;
     }
