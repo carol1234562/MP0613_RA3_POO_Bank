@@ -9,6 +9,7 @@
 
 use ComBank\Bank\Contracts\BankAccountInterface;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
+use ComBank\Exceptions\ZeroAmountException;
 
 class DepositTransaction implements BankTransactionInterface
 {
@@ -16,13 +17,24 @@ class DepositTransaction implements BankTransactionInterface
 
     public function __construct(float $amount)
     {
+        if ($amount <= 0) {
+            throw new ZeroAmountException("Amount must be greater than zero.");
+            }
         $this->amount = $amount;
     }
-    
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    public function getTransactionInfo(): string
+    {
+       return 'DEPOSIT_TRANSACTION';
+    }
+        
 
     public function applyTransaction(BankAccountInterface $account): float
     {
-        // Sumamos el monto del depósito al balance actual de la cuenta
         $newBalance = $account->getBalance() + $this->amount;
         return $newBalance;
     }

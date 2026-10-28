@@ -25,19 +25,25 @@ class WithdrawTransaction implements BankTransactionInterface
         $this->amount = $amount;
     }
 
-    public function applyTransaction(BankAccountInterface $account): float
+ public function applyTransaction(BankAccountInterface $account): float
     {
         $currentBalance = $account->getBalance();
-        
-        $overdraftLimit = $account->getOverdraft()->getOverdraftFundsAmount();
+        $newBalance = $currentBalance - $this->amount;
 
-        $totalAvailable = $currentBalance + $overdraftLimit;
-
-        if ($this->amount > $totalAvailable) {
-            throw new FailedTransactionException("Insufficient balance to complet the withdrawl.");
+        if (!$account->getOverdraft()->isGrantOverdraftFunds($newBalance)) {
+            throw new InvalidOverdraftFundsException("Insufficient balance to complete the withdrawal.");
         }
 
-        // 5. Retornar el nuevo balance resultante
-        return $currentBalance - $this->amount;
+        return $newBalance;
+    }
+
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    public function getTransactionInfo(): string
+    {
+       return 'WITHDRAW_TRANSACTION';
     }
 }

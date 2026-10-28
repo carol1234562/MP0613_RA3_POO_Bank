@@ -33,10 +33,24 @@ class BankAccount implements BankAccountInterface
     //constructor que reciba balance 
     public function __construct(float $balance = 0.0, int $amount = 1)
     {
-        $this->balance = $balance;
+
+    if ($amount <= 0) {
+        throw new ZeroAmountException("Amount must be greater than zero.");
+        }
         $this->amount = $amount;
+        $this->balance = $balance;
         $this->status = true;
         $this->overdraft = new NoOverdraft();
+    }
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    public function getTransactionInfo(): string
+    {
+        return "Deposit transaction"; 
+
     }
 
     //get balance();
@@ -56,8 +70,17 @@ class BankAccount implements BankAccountInterface
             $this->status = false;   
     }
 
+    public function isOpen(): bool
+    {
+        return $this->status; 
+    }
+
+
     public function reopenAccount(): void
     {
+        if ($this->status) {
+        throw new BankAccountException("Error: Account is already open.");
+        }
         $this->status = true;
     }
 
@@ -66,6 +89,9 @@ class BankAccount implements BankAccountInterface
 
     public function transaction(BankTransactionInterface $bankTransaction): void
     {
+        if (!$this->status) {
+        throw new BankAccountException("Error: Account is closed.");
+    }
         $newBalance = $bankTransaction->applyTransaction($this);
         $this->setBalance($newBalance);
     }
