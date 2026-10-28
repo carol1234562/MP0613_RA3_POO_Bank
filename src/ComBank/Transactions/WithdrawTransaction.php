@@ -25,14 +25,21 @@ class WithdrawTransaction implements BankTransactionInterface
         $this->amount = $amount;
     }
 
- public function applyTransaction(BankAccountInterface $account): float
+    public function applyTransaction(BankAccountInterface $account): float
     {
         $currentBalance = $account->getBalance();
         $newBalance = $currentBalance - $this->amount;
 
-        if (!$account->getOverdraft()->isGrantOverdraftFunds($newBalance)) {
-        throw new FailedTransactionException("Insufficient balance to complete the withdrawal.");
-          }   
+        if ($account->getOverdraft() instanceof \ComBank\OverdraftStrategy\NoOverdraft) {
+            if ($newBalance < 0) {
+                throw new InvalidOverdraftFundsException("Insufficient balance to complete the withdrawal.");
+            }
+        } 
+        else {
+            if (!$account->getOverdraft()->isGrantOverdraftFunds($newBalance)) {
+                throw new FailedTransactionException("Insufficient balance to complete the withdrawal.");
+            }
+        }
 
         return $newBalance;
     }
