@@ -25,4 +25,9 @@ class SilverOverdraft implements OverdraftInterface
     {
         return $this->fundsAmount;
     }
+
+    public function getInterestRate(): int
+    {
+        return 5; 
+    }
 }

@@ -8,6 +8,7 @@
  */
 
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
+use Override;
 
 class NoOverdraft implements OverdraftInterface
 {
@@ -19,5 +20,10 @@ class NoOverdraft implements OverdraftInterface
     public function getOverdraftFundsAmount(): float
     {
         return 0.0;
+    }
+
+    public function getInterestRate(): int
+    {
+        return 1; 
     }
 }

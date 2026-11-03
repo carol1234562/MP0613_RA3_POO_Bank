@@ -15,6 +15,12 @@ use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\ZeroAmountException;
 
+
+
+use ComBank\OverdraftStrategy\GoldOverdraft;
+use ComBank\OverdraftStrategy\NoOverdraft;
+use ComBank\Transactions\InterestTransaction;
+
 require_once 'bootstrap.php';
 
 
@@ -125,3 +131,31 @@ try {
 } catch (BankAccountException $e) {
     pl($e->getMessage());
 }
+
+
+
+
+$bankAccount4 = new BankAccount(1000.0);
+$bankAccount4->setOverdraft(new NoOverdraft());
+
+pl('Initial balance: ' . $bankAccount4->getBalance());
+
+$bankAccount4->transaction(new InterestTransaction());
+pl('Balance after interest (+1%): ' . $bankAccount4->getBalance());
+
+
+$bankAccount5 = new BankAccount(1000.0);
+$bankAccount5->setOverdraft(new SilverOverdraft());
+
+pl('Initial balance: ' . $bankAccount5->getBalance());
+
+$bankAccount5->transaction(new InterestTransaction());
+pl('Balance after interest (+5%): ' . $bankAccount5->getBalance());
+
+$bankAccount6 = new BankAccount(1000.0);
+$bankAccount6->setOverdraft(new GoldOverdraft());
+
+pl('Initial balance: ' . $bankAccount6->getBalance());
+
+$bankAccount6->transaction(new InterestTransaction());
+pl('Balance after interest (+10%): ' . $bankAccount6->getBalance());
