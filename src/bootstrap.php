@@ -1,16 +1,16 @@
 <?php
 /**
- * Created by VS Code.
- * User: JPortugal
- * Date: 7/27/24
- * Time: 7:21 PM
+ * Creado con VS Code.
+ * Usuario: JPortugal
+ * Fecha: 7/27/24
+ * Hora: 7:21 PM
  */
 
 require_once __DIR__.'/../vendor/autoload.php';
 
 
 
-/* [@tmp methods for testing only...]*/
+/* [@tmp métodos temporales solo para pruebas...] */
 
 function pl($mixed)
 {

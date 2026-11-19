@@ -1,16 +1,16 @@
 <?php namespace ComBank\OverdraftStrategy;
 
 /**
- * Created by VS Code.
- * User: JPortugal
- * Date: 7/28/24
- * Time: 1:39 PM
+ * Creado con VS Code.
+ * Usuario: JPortugal
+ * Fecha: 7/28/24
+ * Hora: 1:39 PM
  */
 
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 
 /**
- * @description: Grant 100.00 overdraft funds.
+ * @description: Concede 100.00 en fondos de sobregiro.
  * */
 class SilverOverdraft implements OverdraftInterface
 {

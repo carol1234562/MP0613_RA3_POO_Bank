@@ -1,67 +1,54 @@
 <?php
 
 /**
- * Created by VS Code.
- * User: JPortugal
- * Date: 7/28/24
- * Time: 11:41 AM
+ * Creado con VS Code.
+ * Usuario: JPortugal
+ * Fecha: 7/28/24
+ * Hora: 11:41 AM
  */
 
 use ComBank\Bank\BankAccount;
-use PHPUnit\Framework\TestCase;
-use ComBank\Transactions\DepositTransaction;
 use ComBank\Exceptions\ZeroAmountException;
+use ComBank\Transactions\DepositTransaction;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 class DepositTransactionTest extends TestCase
 {
-
-    /**
-     * @test
-     * */
-    public function testApplyTransaction()
+    public function testApplyTransaction(): void
     {
-        $bankAccount =  new BankAccount(50.25);
+        $bankAccount = new BankAccount(50.25, 'test@gmail.com');
         $amount = 25.25;
         $trans = new DepositTransaction($amount);
         $newBalance = $trans->applyTransaction($bankAccount);
         $this->assertEquals(75.50, $newBalance);
     }
-    /**
-     * @test
-     * @dataProvider invalidAmountProvider
-     * @expectedException ComBank\Exceptions\ZeroAmountException
-     * */
-    public function testInvalidAmount($amount)
+
+    #[DataProvider('invalidAmountProvider')]
+    public function testInvalidAmount(float $amount): void
     {
         $this->expectException(ZeroAmountException::class);
         new DepositTransaction($amount);
     }
-    
-    /**
-     * @test
-     * */
-    public function testTransactionInfo()
+
+    public function testTransactionInfo(): void
     {
         $trans = new DepositTransaction(22.0);
         $this->assertEquals('DEPOSIT_TRANSACTION', $trans->getTransactionInfo());
     }
-    /**
-     * @test
-     * */
-    public function testGetAmount()
+
+    public function testGetAmount(): void
     {
         $trans = new DepositTransaction(100.25);
         $this->assertEquals(100.25, $trans->getAmount());
     }
-    /**
-     * @return array;
-     * */
-    public function invalidAmountProvider()
+
+    public static function invalidAmountProvider(): array
     {
         return [
-            [-100],   // Negative value
-            [-0.01],  // Small negative value
-            [0]       // Zero amount
+            [-100],   // Valor negativo
+            [-0.01],  // Valor negativo pequeño
+            [0],      // Importe cero
         ];
-    }    
+    }
 }

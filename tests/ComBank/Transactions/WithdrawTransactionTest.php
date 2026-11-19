@@ -1,99 +1,77 @@
 <?php
-use PHPUnit\Framework\TestCase;
+
 use ComBank\Bank\BankAccount;
-use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
-use ComBank\OverdraftStrategy\SilverOverdraft;
-use ComBank\Exceptions\BankAccountException;
-use ComBank\Bank\Contracts\BankAccountInterface;
-use ComBank\Transactions\WithdrawTransaction;
 use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\Exceptions\ZeroAmountException;
+use ComBank\OverdraftStrategy\SilverOverdraft;
+use ComBank\Transactions\WithdrawTransaction;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Created by VS Code.
- * User: JPortugal
- * Date: 7/28/24
- * Time: 1:47 PM
+ * Creado con VS Code.
+ * Usuario: JPortugal
+ * Fecha: 7/28/24
+ * Hora: 1:47 PM
  */
 
 class WithdrawTransactionTest extends TestCase
 {
-
-    /**
-     * @test
-     * */
-    public function testWithdrawTransactionMoreThanBalance()
-    {     
-
-        $bankAccount = new BankAccount(150.0);
+    public function testWithdrawTransactionMoreThanBalance(): void
+    {
+        $bankAccount = new BankAccount(150.0, 'test@gmail.com');
         $amount = 50;
         $trans = new WithdrawTransaction($amount);
         $newBalance = $trans->applyTransaction($bankAccount);
-        $this->assertEquals(100,$newBalance);
+        $this->assertEquals(100, $newBalance);
     }
-    /**
-     * @test
-     * @expectedException ComBank\Exceptions\InvalidOverdraftFundsException
-     * */
-    public function testWithdrawTransactionLessThanBalanceNoOverdraft()
+
+    public function testWithdrawTransactionLessThanBalanceNoOverdraft(): void
     {
         $this->expectException(InvalidOverdraftFundsException::class);
 
-        $bankAccount = new BankAccount(100.0);
-
+        $bankAccount = new BankAccount(100.0, 'test@gmail.com');
         $amount = 150;
         $trans = new WithdrawTransaction($amount);
-        $newBalance = $trans->applyTransaction($bankAccount);
-        $this->assertEquals(100,$newBalance);
+        $trans->applyTransaction($bankAccount);
     }
-    /**
-     * @test
-     * */
-    public function testWithdrawTransactionLessThanBalanceWithOverdraft()
+
+    public function testWithdrawTransactionLessThanBalanceWithOverdraft(): void
     {
-        $bankAccount = new BankAccount(100.0);
+        $bankAccount = new BankAccount(100.0, 'test@gmail.com');
         $bankAccount->applyOverdraft(new SilverOverdraft());
 
         $amount = 150;
         $trans = new WithdrawTransaction($amount);
         $newBalance = $trans->applyTransaction($bankAccount);
-        $this->assertEquals(-50,$newBalance);
+        $this->assertEquals(-50, $newBalance);
     }
-    /**
-     * @test
-     * @dataProvider invalidAmountProvider
-     * @expectedException ComBank\Exceptions\InvalidArgsException
-     * */
-    public function testInvalidAmount($amount)
+
+    #[DataProvider('invalidAmountProvider')]
+    public function testInvalidAmount(float $amount): void
     {
         $this->expectException(ZeroAmountException::class);
         new WithdrawTransaction($amount);
     }
-    
-    /**
-     * @test
-     * */
-    public function testTransactionInfo()
+
+    public function testTransactionInfo(): void
     {
         $trans = new WithdrawTransaction(22.0);
-        $this->assertEquals('WITHDRAW_TRANSACTION',$trans->getTransactionInfo());
+        $this->assertEquals('WITHDRAW_TRANSACTION', $trans->getTransactionInfo());
     }
-    /**
-     * @test
-     * */
-    public function testGetAmount(){
+
+    public function testGetAmount(): void
+    {
         $trans = new WithdrawTransaction(100.25);
-        $this->assertEquals(100.25,$trans->getAmount());
+        $this->assertEquals(100.25, $trans->getAmount());
     }
-    /**
-     * @return array;
-     * */
-    public function invalidAmountProvider()
+
+    public static function invalidAmountProvider(): array
     {
         return [
-            [-100],   // Negative value
-            [-0.01],  // Small negative value
-            [0]       // Zero amount
+            [-100],   // Valor negativo
+            [-0.01],  // Valor negativo pequeño
+            [0],      // Importe cero
         ];
-    }   
+    }
 }

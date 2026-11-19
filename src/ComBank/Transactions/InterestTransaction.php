@@ -7,27 +7,31 @@ use ComBank\Transactions\Contracts\BankTransactionInterface;
 
 class InterestTransaction extends BaseTransaction implements BankTransactionInterface
 {
+    public function __construct()
+    {
+        $this->amount = 0.0;
+    }
+
     public function applyTransaction(BankAccountInterface $account): float
     {
         $currentBalance = $account->getBalance();
-        //recepciona
-        
-        $interestRate = $account->getOverdraft()->getInterestRate();
 
-        $interestAmount = $currentBalance * ($interestRate / 100);
+        // No se acumulan intereses si el saldo es cero o negativo
+        if ($currentBalance <= 0) {
+            $this->amount = 0.0;
+            return $currentBalance;
+        }
+
+        $interestRate = $account->getOverdraft()->getInterestRate();
+        $interestAmount = round($currentBalance * ($interestRate / 100), 2);
 
         $this->amount = $interestAmount;
 
-        return $currentBalance + $interestAmount;
+        return round($currentBalance + $interestAmount, 2);
     }
 
     public function getTransactionInfo(): string
     {
-        return "Interest transaction";
-    }
-
-    public function getAmount(): float
-    {
-        return $this->amount;
+        return 'INTEREST_TRANSACTION';
     }
 }
