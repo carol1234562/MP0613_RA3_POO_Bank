@@ -9,6 +9,7 @@
 
 use ComBank\Bank\Bank;
 use ComBank\Bank\BankAccount;
+use ComBank\Bank\BankNationalAccount;
 use ComBank\Bank\Customer;
 use ComBank\Bank\InternationalBankAccount;
 use ComBank\Bank\NationalBankAccount;
@@ -275,7 +276,7 @@ pl('Total balance for cliente1@gmail.com: ' . $bank->getTotalBalanceByEmail('cli
 
 //---[Subclases de cuenta: Nacional, Internacional y de Ahorro]---/
 pl('--------- [Start testing account types (National, International, Savings)] --------');
-$nationalAccount = new NationalBankAccount(800.0, 'nacional@gmail.com');
+$nationalAccount = new BankNationalAccount(800.0, 'nacional@gmail.com');
 pl('National account IBAN: ' . $nationalAccount->getAccountNumber() . ' | Balance: ' . $nationalAccount->getBalance() . ' ' . $nationalAccount->getCurrency());
 
 $internationalAccount = new InternationalBankAccount(1000.0, 'global@gmail.com', 'USD', 1.10);
@@ -311,7 +312,7 @@ pl('Account status after unblock: ' . ($secureAccount->isBlocked() ? 'BLOCKED' :
 //---[Entidad Customer (Cliente con múltiples cuentas)]---/
 pl('--------- [Start testing Customer entity] --------');
 $customer = new Customer('Carolina Solorzano', '12345678A', 'carolina@gmail.com');
-$customerMain = new NationalBankAccount(1200.0, $customer);
+$customerMain = new BankNationalAccount(1200.0, $customer);
 $customerSavings = new SavingsAccount(800.0, $customer, 3);
 $bank->addAccount($customerMain);
 $bank->addAccount($customerSavings);

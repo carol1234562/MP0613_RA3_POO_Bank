@@ -31,14 +31,17 @@ class BankAccount implements BankAccountInterface
     private static int $accountSequence = 1;
 
     protected string $accountNumber;
-    protected string $currency = 'EUR';
     protected float $balance;
     protected string $email;
+    protected string $currency;
+
     protected ?Customer $customer = null;
     protected int $amount;
     protected bool $status = true;
     protected OverdraftInterface $overdraft;
     protected array $transactionHistory = [];
+     protected string $formattedBalance; 
+
 
     public function __construct(float $balance, string|Customer|null $owner = null, int $amount = 1)
     {
@@ -90,11 +93,6 @@ class BankAccount implements BankAccountInterface
     public function getAccountNumber(): string
     {
         return $this->accountNumber;
-    }
-
-    public function getCurrency(): string
-    {
-        return $this->currency;
     }
 
     public function getEmail(): string
@@ -177,6 +175,17 @@ class BankAccount implements BankAccountInterface
         $this->transaction(new TransferTransaction($amount, $targetAccount));
     }
 
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency( string $currency) : void {
+        $this->currency =  $currency;
+    }
+
+        
+
     public function getTransactionHistory(): array
     {
         return $this->transactionHistory;
@@ -201,4 +210,5 @@ class BankAccount implements BankAccountInterface
     {
         $this->overdraft = $overdraft;
     }
+
 }

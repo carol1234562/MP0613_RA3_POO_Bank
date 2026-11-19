@@ -20,6 +20,7 @@ interface BankAccountInterface
 
     public function getAccountNumber(): string;
     public function getCurrency(): string;
+    
     public function getBalance(): float;
     public function setBalance(float $balance): void;
     public function getEmail(): string;
